@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "Screenur.h"
+using json = nlohmann::json;
+
 
 #define MAX_LOADSTRING 100
 #define APPLICATION_INSTANCE_MUTEX_NAME L"{BA29345E-C29A-4359-A07C-52B64B5571AD}"
@@ -24,7 +26,9 @@ PBITMAPINFO         CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp);
 INT                 CreateBMPFile(HWND hwnd, LPCTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 INT                 bitmapToPNG(std::wstring fileName);
 HBITMAP             screenCapture(int x, int y, int w, int h);
-INT                 postToImgur(FILE *image);
+INT                 postToImgur(std::string);
+size_t              write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
+
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -299,8 +303,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				return -1;
 			} 
 
-			postToImgur(image);
-			fclose(image);
+			CStringA fileNameOnlyPNG((fileName + L".png").c_str());
+
+			postToImgur(std::string(sFullImagePNG));
 
 			//DeleteFile((filePath + fileName + ".bmp").c_str());
 			//DeleteFile((filePath + fileName + ".png").c_str());
@@ -627,9 +632,15 @@ HBITMAP screenCapture(int x, int y, int w, int h) {
 	return hBitmap;
 }
 
+//static read_callback();
 
-int postToImgur(FILE *image)
+int postToImgur(std::string file)
 {
+	// Curl wants forward slashes in file names
+	std::replace(file.begin(), file.end(), '\\', '/');
+
+	curl_global_cleanup();
+
 	CURL *curl;
 	CURLcode res;
 
@@ -639,13 +650,18 @@ int postToImgur(FILE *image)
 	// Get curl handle
 	curl = curl_easy_init();
 
+	struct curl_httppost *formpost = NULL;
+	struct curl_httppost *lastptr = NULL;
+	struct curl_slist *headerlist = NULL;
+
 	if (curl) {
+		curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, "image", CURLFORM_FILE, file.c_str(), CURLFORM_END);
+		headerlist = curl_slist_append(headerlist, "Expect:");
+		headerlist = curl_slist_append(headerlist, "Authorization: Client-ID bea02ebef14af4b");
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
 		curl_easy_setopt(curl, CURLOPT_URL, "https://api.imgur.com/3/image");
-		curl_easy_setopt(curl, CURLOPT_POST, 1L);
-		curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
-
-		// We're using chunked uploads so we don't have to specify file size
-
+		curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
 
 		res = curl_easy_perform(curl);
 
@@ -654,12 +670,22 @@ int postToImgur(FILE *image)
 		}
 
 		curl_easy_cleanup(curl);
+		curl_formfree(formpost);
+		curl_slist_free_all(headerlist);
 	}
-
-	// TODO: Figure out how to post
-	// TODO: Read result in call back
-	// TODO: Copy result url to cliboard and open in browser
-
-	curl_global_cleanup();
 	return 0;
+}
+
+size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
+{
+
+	CStringA responseStringA(ptr);
+	CStringW responseStringW(ptr);
+	MessageBox(NULL, responseStringW, _T("Response"), NULL);
+	std::string responseString(responseStringA);
+
+	//auto response = json::parse((LPCSTR)responseStringA);
+	//json test = response["data"];
+	return (size * nmemb);
+
 }
