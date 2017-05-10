@@ -24,6 +24,7 @@ PBITMAPINFO			CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp);
 INT					CreateBMPFile(HWND hwnd, LPCTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 INT					bitmapToPNG(std::wstring fileName);
 HBITMAP				screenCapture(int x, int y, int w, int h);
+INT					postToImgur(FILE *image);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -172,6 +173,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	std::wstring filePath;
 	std::wstring fileName;
 	std::string debug;
+	FILE *image;
 
 	switch (message)                  /* handle the messages */
 	{
@@ -284,10 +286,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			GetTempPath(MAX_PATH, wCharFilePath);
 			std::wstring filePath(wCharFilePath);
 			fileName = GetRandomFileName();
-			CreateBMPFile(hwnd, (filePath + fileName + L".bmp").c_str(), pbi, screenshot, hdc);
+			std::wstring fullNameBMP = (filePath + fileName + L".bmp");
+			CreateBMPFile(hwnd, fullNameBMP.c_str(), pbi, screenshot, hdc);
+
 			bitmapToPNG((filePath + fileName));
 
 			// POST to imgur and handle response
+			CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
+
+			if (fopen_s(&image, sFullImagePNG, "r") != 0) {
+				MessageBox(NULL, _T("Could not find image."), _T("Error"), NULL);
+				return -1;
+			} 
+
+			fclose(image);
+			postToImgur(image);
 
 			//DeleteFile((filePath + fileName + ".bmp").c_str());
 			//DeleteFile((filePath + fileName + ".png").c_str());
@@ -612,4 +625,37 @@ HBITMAP screenCapture(int x, int y, int w, int h) {
 	DeleteDC(hdcMemory);
 
 	return hBitmap;
+}
+
+
+int postToImgur(FILE *image)
+{
+	CURL *curl;
+	CURLcode res;
+
+	// Init winsock stuff
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	// Get curl handle
+	curl = curl_easy_init();
+
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.imgur.com/3/image");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
+
+		res = curl_easy_perform(curl);
+
+		if (res != CURLE_OK) {
+			MessageBox(NULL, _T("Could not upload image. Please check your internet connection."), _T("Error"), NULL);
+		}
+
+		curl_easy_cleanup(curl);
+	}
+
+	// TODO: Figure out how to post
+	// TODO: Read result in call back
+	// TODO: Copy result url to cliboard and open in browser
+
+	curl_global_cleanup();
+	return 0;
 }

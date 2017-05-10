@@ -16,3 +16,6 @@
 #include <string>
 #include <time.h>
 #include <gdiplus.h>
+#include <curl/curl.h>
+#include <stdio.h>
+#include <atlstr.h>
