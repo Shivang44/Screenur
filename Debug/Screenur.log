@@ -1,0 +1,5 @@
+﻿  Screenur.cpp
+c:\users\shivang\documents\visual studio 2017\projects\screenur\screenur\screenur.cpp(363): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\shivang\documents\visual studio 2017\projects\screenur\screenur\screenur.cpp(560): warning C4715: 'CreateBMPFile': not all control paths return a value
+  Screenur.vcxproj -> C:\Users\Shivang\documents\visual studio 2017\Projects\Screenur\Debug\Screenur.exe
+  Screenur.vcxproj -> C:\Users\Shivang\documents\visual studio 2017\Projects\Screenur\Debug\Screenur.pdb (Partial PDB)
