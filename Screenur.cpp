@@ -18,13 +18,13 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-std::wstring		GetRandomFileName();
-INT					GetEncoderClsid(const WCHAR* format, CLSID* pClsid);
-PBITMAPINFO			CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp);
-INT					CreateBMPFile(HWND hwnd, LPCTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
-INT					bitmapToPNG(std::wstring fileName);
-HBITMAP				screenCapture(int x, int y, int w, int h);
-INT					postToImgur(FILE *image);
+std::wstring        GetRandomFileName();
+INT                 GetEncoderClsid(const WCHAR* format, CLSID* pClsid);
+PBITMAPINFO         CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp);
+INT                 CreateBMPFile(HWND hwnd, LPCTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
+INT                 bitmapToPNG(std::wstring fileName);
+HBITMAP             screenCapture(int x, int y, int w, int h);
+INT                 postToImgur(FILE *image);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
