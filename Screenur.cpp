@@ -299,8 +299,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				return -1;
 			} 
 
-			fclose(image);
 			postToImgur(image);
+			fclose(image);
 
 			//DeleteFile((filePath + fileName + ".bmp").c_str());
 			//DeleteFile((filePath + fileName + ".png").c_str());
@@ -641,7 +641,11 @@ int postToImgur(FILE *image)
 
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, "https://api.imgur.com/3/image");
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
+		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
+
+		// We're using chunked uploads so we don't have to specify file size
+
 
 		res = curl_easy_perform(curl);
 
