@@ -19,5 +19,4 @@
 #include <curl/curl.h>
 #include <stdio.h>
 #include <atlstr.h>
-#include <algorithm> 
 #include "json.hpp"

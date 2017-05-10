@@ -636,9 +636,6 @@ HBITMAP screenCapture(int x, int y, int w, int h) {
 
 int postToImgur(std::string file)
 {
-	// Curl wants forward slashes in file names
-	std::replace(file.begin(), file.end(), '\\', '/');
-
 	curl_global_cleanup();
 
 	CURL *curl;
