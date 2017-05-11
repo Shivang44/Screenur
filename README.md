@@ -12,6 +12,7 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 - Actually upload the generated PNG to imgur using libcurl
 - Implement tray icon with notifications
 - Develop settings menu
+- Implement asynchronous uploads so users can spam the screenshot buttons and not have each request processed
 - Design icons (would love suggestions/input on this!)
 
 # Download
