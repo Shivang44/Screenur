@@ -19,4 +19,4 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 - Design icons (would love suggestions/input on this!)
 
 # Download
-The latest binary (still in pre-pre-pre-development stages) can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
+The latest binary (still in pre-development stages) can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
