@@ -19,4 +19,6 @@
 #include <curl/curl.h>
 #include <stdio.h>
 #include <atlstr.h>
-#include "json.hpp"
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>

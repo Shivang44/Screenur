@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "Screenur.h"
-using json = nlohmann::json;
 
 
 #define MAX_LOADSTRING 100
@@ -28,7 +27,7 @@ INT                 bitmapToPNG(std::wstring fileName);
 HBITMAP             screenCapture(int x, int y, int w, int h);
 INT                 postToImgur(std::string);
 size_t              write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
-
+void				handleURLResponse(const char * URL);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -177,7 +176,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	std::wstring filePath;
 	std::wstring fileName;
 	std::string debug;
-	FILE *image;
 
 	switch (message)                  /* handle the messages */
 	{
@@ -207,8 +205,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				fileName = GetRandomFileName();
 				CreateBMPFile(hwnd, (filePath + fileName + L".bmp").c_str(), pbi, screenshot, hdc);
 				bitmapToPNG((filePath + fileName));
-				//DeleteFile((filePath + fileName + ".bmp").c_str());
-				//DeleteFile((filePath + fileName + ".png").c_str());
+
+				CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
+				postToImgur(std::string(sFullImagePNG));
+
+
+				DeleteFile((filePath + fileName + L".bmp").c_str());
+				DeleteFile((filePath + fileName + L".png").c_str());
 				ReleaseDC(hwnd, hdc);
 
 			}
@@ -297,18 +300,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// POST to imgur and handle response
 			CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
-
-			if (fopen_s(&image, sFullImagePNG, "r") != 0) {
-				MessageBox(NULL, _T("Could not find image."), _T("Error"), NULL);
-				return -1;
-			} 
-
-			CStringA fileNameOnlyPNG((fileName + L".png").c_str());
-
 			postToImgur(std::string(sFullImagePNG));
 
-			//DeleteFile((filePath + fileName + ".bmp").c_str());
-			//DeleteFile((filePath + fileName + ".png").c_str());
+			DeleteFile((filePath + fileName + L".bmp").c_str());
+			DeleteFile((filePath + fileName + L".png").c_str());
 			ReleaseDC(hwnd, hdc);
 		}
 		break;
@@ -675,14 +670,39 @@ int postToImgur(std::string file)
 
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
+	// Libcurl is out to get you and doesn't pass a null-terminated char array!
+	
+	char * responseString = new char[nmemb + 1]();
+	strncpy(responseString, ptr, size*nmemb);
+	responseString[nmemb] = '\0';
+	OutputDebugStringA(responseString);
 
-	CStringA responseStringA(ptr);
-	CStringW responseStringW(ptr);
-	MessageBox(NULL, responseStringW, _T("Response"), NULL);
-	std::string responseString(responseStringA);
+	// Parse JSON to get the URL
+	rapidjson::Document responseJSON;
+	responseJSON.Parse(responseString);
+	rapidjson::Value& url = responseJSON["data"]["link"];
+	
+	// Handle the URL Response
+	std::string imageLink = url.GetString();
+	handleURLResponse(imageLink.c_str());
 
-	//auto response = json::parse((LPCSTR)responseStringA);
-	//json test = response["data"];
 	return (size * nmemb);
 
+}
+
+void handleURLResponse(const char * URL)
+{
+	// Open URL in browser
+	CStringW wURL(URL);
+	ShellExecute(0, 0, wURL, 0, 0, SW_SHOW);
+
+	// Copy URL to clipboard
+	const size_t len = strlen(URL) + 1;
+	HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len);
+	memcpy(GlobalLock(hMem), URL, len);
+	GlobalUnlock(hMem);
+	OpenClipboard(0);
+	EmptyClipboard();
+	SetClipboardData(CF_TEXT, hMem);
+	CloseClipboard();
 }
