@@ -15,6 +15,7 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
   - Change post-screenshot actions (automatically open in browser or not, copy to clipboard or not, etc)
   - Save screenshots locally
   - Autostart on startup
+    - For the time being you can just put the .exe file in the Startup Folder (Press start, type %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup and put the file in that folder)
 - Implement asynchronous uploads so users can spam the screenshot buttons and have each request processed
 - Design icons (would love suggestions/input on this!)
 
