@@ -9,7 +9,6 @@ CTRL-SHIFT-3 - Uploads fullscreen screenshot to imgur, opens in browser, and cop
 CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable region on your screen
 
 # What's left to do
-- Actually upload the generated PNG to imgur using libcurl
 - Implement tray icon with notifications
 - Develop settings menu
 - Implement asynchronous uploads so users can spam the screenshot buttons and have each request processed
