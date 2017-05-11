@@ -10,10 +10,11 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 
 # What's left to do
 - Implement tray icon with notifications
-- Develop settings menu
+- Develop settings menu with options to 
   - Change screenshot hotkeys
-  - Change post-screenshot options (automatically open in browser or not, copy to clipboard or not, etc)
-  - Option to save screenshots locally
+  - Change post-screenshot actions (automatically open in browser or not, copy to clipboard or not, etc)
+  - Save screenshots locally
+  - Autostart on startup
 - Implement asynchronous uploads so users can spam the screenshot buttons and have each request processed
 - Design icons (would love suggestions/input on this!)
 
