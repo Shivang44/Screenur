@@ -4,7 +4,7 @@ A fast and minimal screenshot tool that instantaneously uploads screenshots to i
 Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and libcurl for uploading to imgur. 
 
 # Features
-- Region screenshot and fullscreen screenshots
+- User-selectable region screenshot and fullscreen screenshot support
 - Automatically uploads screenshot to imgur, opens in browser, and copies url to clipboard
 - Small footprint: Less than 500kb and very light on system resources
 - No install required and no external dependancies
