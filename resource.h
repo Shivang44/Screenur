@@ -15,6 +15,9 @@
 #define IDR_MAINFRAME                   128
 #define ERROR_ALREADY_RUNNING           129
 #define IDC_STATIC                      -1
+#define ID_TRAY_APP_ICON				200
+#define ID_TRAY_EXIT					201
+#define WM_TRAYICON                     ( WM_USER + 1 )
 
 // Next default values for new objects
 // 

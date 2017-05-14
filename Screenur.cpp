@@ -13,6 +13,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+HMENU hMenu;										// The popup menu for the tray icon
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -27,6 +28,7 @@ HBITMAP             screenCapture(int x, int y, int w, int h);
 INT                 postToImgur(std::string);
 size_t              write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
 void				handleURLResponse(const char * URL);
+NOTIFYICONDATA *    trayIconData(HWND hwnd);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -34,7 +36,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -155,16 +156,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 int startX, startY, endX, endY;
 HBITMAP screenshot;
 BOOL draw = false;
+BOOL trayCreated = false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
-
 	PAINTSTRUCT ps;
 	HDC hdc;
 	HDC hdcMem;
 	HBITMAP hbmOld;
-
 	int fullW = GetSystemMetrics(SM_CXSCREEN);
 	int fullH = GetSystemMetrics(SM_CYSCREEN);
 	HBRUSH hBrush, hOldBrush;
@@ -174,7 +173,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	TCHAR wCharFilePath[MAX_PATH];
 	std::wstring filePath;
 	std::wstring fileName;
-	std::string debug;
+
+	if (!trayCreated)
+	{
+		Shell_NotifyIcon(NIM_ADD, trayIconData(hwnd));
+		trayCreated = true;
+	}
 
 	switch (message)                  /* handle the messages */
 	{
@@ -188,6 +192,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (!RegisterHotKey(hwnd, HOTKEY2, MOD_CONTROL | MOD_SHIFT, 0x34)) {
 				MessageBox(NULL, _T("Could not register hotkey 1."), _T("Error"), NULL);
 			}
+
+			// Create tray icon menu
+			hMenu = CreatePopupMenu();
+			AppendMenu(hMenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit Screenur"));
 		}
 		break;
 		case WM_HOTKEY:
@@ -348,6 +356,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);       /* send a WM_QUIT to the message queue */
 			break;
 		}
+		case WM_TRAYICON:
+			if (lParam == WM_RBUTTONUP) {
+
+				POINT curPoint;
+				GetCursorPos(&curPoint);
+				SetForegroundWindow(hwnd);
+				UINT clicked = TrackPopupMenu(hMenu, TPM_RETURNCMD | TPM_NONOTIFY, curPoint.x, curPoint.y, 0, hwnd, NULL);
+				SendMessage(hwnd, WM_NULL, 0, 0);
+
+				if (clicked == ID_TRAY_EXIT)
+				{
+					PostQuitMessage(0);
+				}
+			}
 		default:                      /* for messages that we don't deal with */
 		{
 			return DefWindowProc(hwnd, message, wParam, lParam);
@@ -704,4 +726,17 @@ void handleURLResponse(const char * URL)
 	EmptyClipboard();
 	SetClipboardData(CF_TEXT, hMem);
 	CloseClipboard();
+}
+
+
+NOTIFYICONDATA * trayIconData(HWND hwnd)
+{
+	NOTIFYICONDATA iconData = {};
+	iconData.hWnd = hwnd;
+	iconData.uID = ID_TRAY_APP_ICON;
+	iconData.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
+	wcscpy_s(iconData.szTip, L"Screenur");
+	iconData.hIcon = (HICON)LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_SCREENUR));
+	iconData.uCallbackMessage = WM_TRAYICON;
+	return &iconData;
 }
