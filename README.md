@@ -1,4 +1,4 @@
-# Screenur ![Screenur Icon](http://i.imgur.com/pyyAt7d.png "Screenur Icon")
+# Screenur ![Screenur Icon](http://i.imgur.com/pc9lOm9.png "Screenur Icon")
 A fast and minimal screenshot tool that instantaneously uploads screenshots to imgur.com
 
 Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and libcurl for uploading to imgur. 
@@ -21,3 +21,8 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 
 # Download
 The latest binary (still in pre-development stages) can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
+
+
+
+
+App icon made by [freepik.com](http://www.freepik.com) from [flaticon.com](http://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
