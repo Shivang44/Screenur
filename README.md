@@ -8,7 +8,7 @@ Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and l
 - Automatically uploads screenshot to imgur, opens in browser, and copies url to clipboard
 - Small footprint: Less than 500kb and very light on system resources
 - No install required and no external dependancies
-- Completely open source and no images are ever stored -- inspect the source and build it yourself if you don't believe me!
+- Completely open source and images are never stored -- inspect the source and build it yourself if you don't believe me!
 
 # Download
 The latest binary can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
