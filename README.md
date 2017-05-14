@@ -9,15 +9,9 @@ CTRL-SHIFT-3 - Uploads fullscreen screenshot to imgur, opens in browser, and cop
 CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable region on your screen
 
 # What's left to do
-- Implement tray icon with notifications
-- Develop settings menu with options to 
-  - Change screenshot hotkeys
-  - Change post-screenshot actions (automatically open in browser or not, copy to clipboard or not, etc)
-  - Save screenshots locally
-  - Autostart on startup
-    - For the time being you can just put the .exe file in the Startup Folder (Press start, type %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup and put the file in that folder)
 - Implement asynchronous uploads so users can spam the screenshot buttons and have each request processed
-- Design icons (would love suggestions/input on this!)
+- Fix multimonitor issues
+- Implement autostart on windows startup
 
 # Download
 The latest binary (still in pre-development stages) can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
