@@ -45,6 +45,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	WCHAR alreadyRunningText[MAX_LOADSTRING];
 	LoadStringW(hInstance, ERROR_ALREADY_RUNNING, alreadyRunningText, MAX_LOADSTRING);
 
+	// Add Screenur to Windows Startup Registry
+	TCHAR path[MAX_PATH];
+	GetModuleFileName(NULL, path, MAX_PATH);
+	HKEY hkey = NULL;
+	HRESULT hres = RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey);
+	RegSetValueEx(hkey, L"Screenur", 0, REG_SZ, (BYTE*)path, (wcslen(path) + 1) * 2);
+
+
 	if (hMutexOneInstance == NULL || bAlreadyRunning)
 	{
 		if (hMutexOneInstance)
