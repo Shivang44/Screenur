@@ -17,6 +17,6 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 The latest binary (still in pre-development stages) can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
 
 
----
+***
 
 App icon made by [freepik.com](http://www.freepik.com) from [flaticon.com](http://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
