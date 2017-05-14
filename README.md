@@ -1,4 +1,4 @@
-# Screenur ![Screenur Icon](http://i.imgur.com/pc9lOm9.png "Screenur Icon")
+# ![Screenur Icon](http://i.imgur.com/pc9lOm9.png "Screenur Icon") Screenur
 A fast and minimal screenshot tool that instantaneously uploads screenshots to imgur.com
 
 Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and libcurl for uploading to imgur. 
