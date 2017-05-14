@@ -19,4 +19,5 @@ The latest binary (still in pre-development stages) can be found [here](https://
 
 ***
 
+
 App icon made by [freepik.com](http://www.freepik.com) from [flaticon.com](http://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
