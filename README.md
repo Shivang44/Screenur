@@ -11,7 +11,6 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 # What's left to do
 - Implement asynchronous uploads so users can spam the screenshot buttons and have each request processed
 - Fix multimonitor issues
-- Implement autostart on windows startup
 
 # Download
 The latest binary can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
