@@ -134,8 +134,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
-   int w = GetSystemMetrics(SM_CXSCREEN);
-   int h = GetSystemMetrics(SM_CYSCREEN);
+   int w = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+   int h = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_POPUP,
       0, 0, w, h, nullptr, nullptr, hInstance, nullptr);
@@ -174,8 +174,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	HDC hdcMem;
 	HBITMAP hbmOld;
-	int fullW = GetSystemMetrics(SM_CXSCREEN);
-	int fullH = GetSystemMetrics(SM_CYSCREEN);
+	int fullW = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+	int fullH = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 	HBRUSH hBrush, hOldBrush;
 	HGDIOBJ hPen, hOldPen;
 	int w, h;
@@ -206,11 +206,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Create tray icon menu
 			hMenu = CreatePopupMenu();
 			AppendMenu(hMenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit Screenur"));
-
-			int testWidth = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-			std::string testWidthS = std::to_string(testWidth);
-			CStringW testWidthSW(testWidthS.c_str());
-			MessageBox(NULL, testWidthSW, _T("ERROR"), NULL);
 		}
 		break;
 		case WM_HOTKEY:
