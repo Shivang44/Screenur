@@ -14,6 +14,8 @@ Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and l
 # Download
 The latest binary can be found [here](https://github.com/Shivang44/Screenur/raw/master/Screenur.exe)
 
+**Note:** In Windows 8/10 you might be prompted by Windows Defender saying Screenur is an unrecognized app. I can't afford a code-signing certificate to remove this warning ($100+), so you will have to [click "More Info" and then click "Run Away"](http://i.imgur.com/VYggA3r.png)
+
 # Usage
 CTRL-SHIFT-3 - Uploads fullscreen screenshot to imgur, opens in browser, and copies url to clipboard
 
