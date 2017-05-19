@@ -164,7 +164,6 @@ int startX, startY, endX, endY;
 HBITMAP screenshot;
 BOOL draw = false;
 BOOL trayCreated = false;
-BOOL pressedRegionHotkey = false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -249,8 +248,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				SelectObject(hdcMem, hbmOld);
 				DeleteDC(hdcMem);
 				EndPaint(hwnd, &ps);
-
-				pressedRegionHotkey = true;
 			}
 		}
 		break;
@@ -275,6 +272,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_LBUTTONUP:
 		{
 			draw = false;
+
 			// Do we need to get endX & endY again since mousemove gets them?
 			endX = GET_X_LPARAM(lParam);
 			endY = GET_Y_LPARAM(lParam);
@@ -325,12 +323,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_MOUSEMOVE:
 		{
-			if (pressedRegionHotkey == true) {
-				startX = GET_X_LPARAM(lParam);
-				startY = GET_Y_LPARAM(lParam);
-				pressedRegionHotkey = false;
-			}
-
 			if (draw) {
 				// Get current mouse position
 				endX = GET_X_LPARAM(lParam);
