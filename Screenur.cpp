@@ -223,10 +223,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				CreateBMPFile(hwnd, (filePath + fileName + L".bmp").c_str(), pbi, screenshot, hdc);
 				bitmapToPNG((filePath + fileName));
 
+				// POST PNG to Imgur
 				CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
 				postToImgur(std::string(sFullImagePNG));
 
-
+				// Delete files and clean up
 				DeleteFile((filePath + fileName + L".bmp").c_str());
 				DeleteFile((filePath + fileName + L".png").c_str());
 				ReleaseDC(hwnd, hdc);
@@ -250,9 +251,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				EndPaint(hwnd, &ps);
 
 				pressedRegionHotkey = true;
-
-
-
 			}
 		}
 		break;
@@ -319,6 +317,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
 			postToImgur(std::string(sFullImagePNG));
 
+			// Delete files and clean up
 			DeleteFile((filePath + fileName + L".bmp").c_str());
 			DeleteFile((filePath + fileName + L".png").c_str());
 			ReleaseDC(hwnd, hdc);
