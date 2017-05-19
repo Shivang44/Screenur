@@ -272,10 +272,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_LBUTTONUP:
 		{
 			draw = false;
-
-			// Do we need to get endX & endY again since mousemove gets them?
 			endX = GET_X_LPARAM(lParam);
 			endY = GET_Y_LPARAM(lParam);
+
+			if (startX == endX && startY == endY) return 0;
+
 			w = abs(startX - endX);
 			h = abs(startY - endY);
 
