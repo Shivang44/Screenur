@@ -6,6 +6,7 @@ Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and l
 # Features
 - User-selectable region screenshot and fullscreen screenshot support
 - Automatically uploads screenshot to imgur, opens in browser, and copies url to clipboard
+- Multi-monitor support
 - Small footprint: Less than 500kb and very light on system resources
 - No install required and no external dependancies
 - Completely open source and images are never stored -- inspect the source and build it yourself if you don't believe me!
@@ -20,7 +21,6 @@ CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable
 
 # What's left to do
 - Implement asynchronous uploads so users can spam the screenshot buttons and have each request processed
-- Fix multimonitor issues
 
 
 ***
