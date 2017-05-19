@@ -39,12 +39,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// Make sure at most one instance of Screenur is running
-	HANDLE hMutexOneInstance(::CreateMutex(NULL, TRUE, APPLICATION_INSTANCE_MUTEX_NAME));
-	bool bAlreadyRunning((::GetLastError() == ERROR_ALREADY_EXISTS));
-	WCHAR alreadyRunningText[MAX_LOADSTRING];
-	LoadStringW(hInstance, ERROR_ALREADY_RUNNING, alreadyRunningText, MAX_LOADSTRING);
-
 	// Add Screenur to Windows Startup Registry
 	TCHAR path[MAX_PATH];
 	GetModuleFileName(NULL, path, MAX_PATH);
@@ -52,6 +46,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HRESULT hres = RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey);
 	RegSetValueEx(hkey, L"Screenur", 0, REG_SZ, (BYTE*)path, (wcslen(path) + 1) * 2);
 
+	// Make sure at most one instance of Screenur is running
+	HANDLE hMutexOneInstance(::CreateMutex(NULL, TRUE, APPLICATION_INSTANCE_MUTEX_NAME));
+	bool bAlreadyRunning((::GetLastError() == ERROR_ALREADY_EXISTS));
+	WCHAR alreadyRunningText[MAX_LOADSTRING];
+	LoadStringW(hInstance, ERROR_ALREADY_RUNNING, alreadyRunningText, MAX_LOADSTRING);
 
 	if (hMutexOneInstance == NULL || bAlreadyRunning)
 	{
@@ -165,6 +164,7 @@ int startX, startY, endX, endY;
 HBITMAP screenshot;
 BOOL draw = false;
 BOOL trayCreated = false;
+BOOL pressedRegionHotkey = false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -233,7 +233,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			}
 			else if (wParam == HOTKEY2) {
-
 				// Region screenshot
 				screenshot = screenCapture(0, 0, fullW, fullH);
 				ShowWindow(hwnd, SW_NORMAL);
@@ -250,6 +249,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				DeleteDC(hdcMem);
 				EndPaint(hwnd, &ps);
 
+				pressedRegionHotkey = true;
 
 
 
@@ -262,6 +262,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				//SendMessage(hwnd, WM_CLOSE, 0, 0);
 				ShowWindow(hwnd, SW_HIDE);
+				draw = false;
+				//pressedRegionHotkey = false;
 			}
 		}
 		break;
@@ -270,8 +272,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			startX = GET_X_LPARAM(lParam);
 			startY = GET_Y_LPARAM(lParam);
 			draw = true;
-			//debug = "Start: ( " + patch::to_string(startX) + ", " + patch::to_string(startY) + ")";
-			//std::cout << debug;
 		}
 		break;
 		case WM_LBUTTONUP:
@@ -326,6 +326,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_MOUSEMOVE:
 		{
+			if (pressedRegionHotkey == true) {
+				startX = GET_X_LPARAM(lParam);
+				startY = GET_Y_LPARAM(lParam);
+				pressedRegionHotkey = false;
+			}
+
 			if (draw) {
 				// Get current mouse position
 				endX = GET_X_LPARAM(lParam);
