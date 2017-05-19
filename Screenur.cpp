@@ -168,6 +168,8 @@ BOOL trayCreated = false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+
+
 	PAINTSTRUCT ps;
 	HDC hdc;
 	HDC hdcMem;
@@ -204,6 +206,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Create tray icon menu
 			hMenu = CreatePopupMenu();
 			AppendMenu(hMenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit Screenur"));
+
+			int testWidth = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+			std::string testWidthS = std::to_string(testWidth);
+			CStringW testWidthSW(testWidthS.c_str());
+			MessageBox(NULL, testWidthSW, _T("ERROR"), NULL);
 		}
 		break;
 		case WM_HOTKEY:
