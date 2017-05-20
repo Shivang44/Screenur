@@ -11,7 +11,7 @@ Developed in C++ using the Winapi (win32) along with GDI/GDI+ for graphics and l
 
 
 # Usage
-CTRL-SHIFT-3 - Uploads fullscreen screenshot to imgur, opens in browser, and copies url to clipboard
+CTRL-SHIFT-3 - Captures and uploads fullscreen screenshot to imgur, opens in browser, and copies url to clipboard
 
 CTRL-SHIFT-4 - Same as above but allows you to take a screenshot of a selectable region on your screen
 
