@@ -390,11 +390,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	}
-
-
-
-
-    return 0;
+	
+	return 0;
 }
 
 std::wstring GetRandomFileName() {
