@@ -164,6 +164,7 @@ int startX, startY, endX, endY;
 HBITMAP screenshot;
 BOOL draw = false;
 BOOL trayCreated = false;
+BOOL processingScreenshot = false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -209,7 +210,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_HOTKEY:
 		{
-			if (wParam == HOTKEY1) {
+			if (wParam == HOTKEY1 && !processingScreenshot) {
+				// Block furthur requests for screenshots until this one is done
+				processingScreenshot = true;
+
 				// Full screenshot
 				screenshot = screenCapture(0, 0, fullW, fullH);
 
@@ -232,7 +236,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				ReleaseDC(hwnd, hdc);
 
 			}
-			else if (wParam == HOTKEY2) {
+			else if (wParam == HOTKEY2 && !processingScreenshot) {
+				processingScreenshot = true;
+
 				// Region screenshot
 				screenshot = screenCapture(0, 0, fullW, fullH);
 				ShowWindow(hwnd, SW_NORMAL);
@@ -734,6 +740,9 @@ void handleURLResponse(const char * URL)
 	EmptyClipboard();
 	SetClipboardData(CF_TEXT, hMem);
 	CloseClipboard();
+
+	// Capture user hotkey for screenshots again
+	processingScreenshot = false;
 }
 
 
