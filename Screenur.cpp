@@ -223,8 +223,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				GetTempPath(MAX_PATH, wCharFilePath);
 				std::wstring filePath(wCharFilePath);
 				fileName = GetRandomFileName();
-				CreateBMPFile(hwnd, (filePath + fileName + L".bmp").c_str(), pbi, screenshot, hdc);
-				bitmapToPNG((filePath + fileName));
+
+				if (CreateBMPFile(hwnd, (filePath + fileName + L".bmp").c_str(), pbi, screenshot, hdc) == -1) {
+					MessageBox(NULL, _T("Error creating BMP file!"), _T("Error"), NULL);
+					processingScreenshot = false;
+					return 0;
+				}
+
+				if (bitmapToPNG((filePath + fileName)) == -1) {
+					MessageBox(NULL, _T("Error creating PNG file!"), _T("Error"), NULL);
+					processingScreenshot = false;
+					return 0;
+				}
 
 				// POST PNG to Imgur
 				CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
@@ -261,10 +271,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if (wParam == VK_ESCAPE)
 			{
-				//SendMessage(hwnd, WM_CLOSE, 0, 0);
 				ShowWindow(hwnd, SW_HIDE);
 				draw = false;
-				//pressedRegionHotkey = false;
+				processingScreenshot = false;
 			}
 		}
 		break;
@@ -314,9 +323,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			std::wstring filePath(wCharFilePath);
 			fileName = GetRandomFileName();
 			std::wstring fullNameBMP = (filePath + fileName + L".bmp");
-			CreateBMPFile(hwnd, fullNameBMP.c_str(), pbi, screenshot, hdc);
 
-			bitmapToPNG((filePath + fileName));
+			if (CreateBMPFile(hwnd, fullNameBMP.c_str(), pbi, screenshot, hdc) == -1) {
+				MessageBox(NULL, _T("Error creating BMP file!"), _T("Error"), NULL);
+				processingScreenshot = false;
+				return 0;
+			}
+
+			if (bitmapToPNG((filePath + fileName)) == -1) {
+				MessageBox(NULL, _T("Error creating PNG file!"), _T("Error"), NULL);
+				processingScreenshot = false;
+				return 0;
+			}
 
 			// POST to imgur and handle response
 			CStringA sFullImagePNG((filePath + fileName + L".png").c_str());
@@ -546,7 +564,7 @@ int CreateBMPFile(HWND hwnd, LPCTSTR pszFile, PBITMAPINFO pbi,
 		FILE_ATTRIBUTE_NORMAL,
 		(HANDLE)NULL);
 	if (hf == INVALID_HANDLE_VALUE)
-		return 0;
+		return -1;
 	hdr.bfType = 0x4d42;        // 0x42 = "B" 0x4d = "M"
 								// Compute the size of the entire file.
 	hdr.bfSize = (DWORD)(sizeof(BITMAPFILEHEADER) +
@@ -615,7 +633,6 @@ int bitmapToPNG(std::wstring fileName) {
 	stat = image->Save(wFileNamePNG.c_str(), &encoderClsid, NULL);
 
 	if (stat != 0) {
-		MessageBox(NULL, _T("Error creating PNG file!"), _T("Error"), NULL);
 		return -1;
 	}
 
@@ -691,6 +708,7 @@ int postToImgur(std::string file)
 
 		if (res != CURLE_OK) {
 			MessageBox(NULL, _T("Could not upload image. Please check your internet connection."), _T("Error"), NULL);
+			processingScreenshot = false;
 		}
 
 		curl_easy_cleanup(curl);
